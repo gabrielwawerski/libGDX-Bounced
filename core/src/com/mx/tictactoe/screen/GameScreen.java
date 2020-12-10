@@ -43,6 +43,9 @@ public class GameScreen implements Screen, InputProcessor {
     private float torque = 1f;
     boolean drawSprite = true;
 
+    long jumpTime = 1000;
+    boolean jumped = false;
+
     Vector2 mousePos;
 
     void getMousePos() {
@@ -81,6 +84,8 @@ public class GameScreen implements Screen, InputProcessor {
     Matrix4 debugMatrix;
 
     final float PIXELS_TO_METERS = 100f;
+    static final long MAX_JUMP_TIME = 550;
+    long jump = MAX_JUMP_TIME;
 
     public GameScreen(DropGame game) {
         raindropTexture = new Texture("drop.png");
@@ -131,7 +136,7 @@ public class GameScreen implements Screen, InputProcessor {
             spawnRaindrop();
         }
 
-        body.setLinearVelocity(5f, 5f);
+        body.setLinearVelocity(2f, 2f);
     }
 
     private float elapsed = 0;
@@ -145,8 +150,10 @@ public class GameScreen implements Screen, InputProcessor {
 
         debugMatrix = game.batch.getProjectionMatrix().cpy().scale(PIXELS_TO_METERS, PIXELS_TO_METERS, 0);
 //        debugRenderer.render(world, debugMatrix);
-        System.out.println("total raindrops: " + raindrops.size);
+//        System.out.println("total raindrops: " + raindrops.size);
     }
+
+    boolean didJump = false;
 
     private void updateScene() {
         world.step(1f / 60f, 1, 3);
@@ -158,32 +165,55 @@ public class GameScreen implements Screen, InputProcessor {
         body.setAngularDamping(0.5f);
 
         if (Gdx.input.isTouched()) {
-
             moveBodyToMouse(body);
         }
 
-        float doubleKeyForce = 2f;
-        float singleKeyForce = 0.8f;
+        float twoDForce = 1f;
+        float oneDForce = 0.6f;
 
         if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            body.applyForceToCenter(new Vector2(-doubleKeyForce, doubleKeyForce), true);
+            body.applyForceToCenter(new Vector2(-twoDForce, 0), true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.S)) {
-            body.applyForceToCenter(new Vector2(-doubleKeyForce, -doubleKeyForce), true);
+            body.applyForceToCenter(new Vector2(-twoDForce, 0), true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            body.applyForceToCenter(new Vector2(doubleKeyForce, -doubleKeyForce), true);
+            body.applyForceToCenter(new Vector2(twoDForce, 0), true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            body.applyForceToCenter(new Vector2(doubleKeyForce, doubleKeyForce), true);
+            body.applyForceToCenter(new Vector2(twoDForce, 0), true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            body.applyForceToCenter(new Vector2(-singleKeyForce, 0), true);
+            body.applyForceToCenter(new Vector2(-oneDForce, 0), true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            body.applyForceToCenter(new Vector2(0, -singleKeyForce), true);
+            body.applyForceToCenter(new Vector2(0.15f, -oneDForce), true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            body.applyForceToCenter(new Vector2(singleKeyForce, 0), true);
+            body.applyForceToCenter(new Vector2(oneDForce, 0), true);
         } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            body.applyForceToCenter(new Vector2(0, singleKeyForce), true);
+            body.applyForceToCenter(new Vector2(0, 0), true);
         }
+
+        long jumpForceDrain = 15;
+        long recoverySpeed = 5;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !didJump) {
+            if (jump > 0) {
+                body.applyForce(new Vector2(0, 0.55f), body.getPosition(), true);
+                jump -= jumpForceDrain;
+            }
+        }
+
+
+        if (jump == MAX_JUMP_TIME) {
+            didJump = false;
+        }
+
+        if (jump == 0) {
+            didJump = true;
+        }
+
+        if (jump < MAX_JUMP_TIME) {
+            jump += recoverySpeed;
+        }
+        System.out.println(jump);
 
         // right bound
         if (bucketSprite.getX() >= Gdx.graphics.getWidth() - bucketSprite.getWidth() / 2 - 5) {
@@ -306,26 +336,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-
-        // On brackets ( [ ] ) apply torque, either clock or counterclockwise
-        if (keycode == Input.Keys.RIGHT_BRACKET)
-            torque += 0.1f;
-        if (keycode == Input.Keys.LEFT_BRACKET)
-            torque -= 0.1f;
-
-        // Remove the torque using backslash /
-        if (keycode == Input.Keys.BACKSLASH)
-            torque = 0.0f;
-
-        // If user hits spacebar, reset everything back to normal
-        if (keycode == Input.Keys.SPACE) {
-            body.setLinearVelocity(0f, 0f);
-            body.setAngularVelocity(0f);
-            torque = 0f;
-//            bucketSprite.setPosition(0f, 0f);
-            body.setTransform(0f, 0f, 0f);
-        }
-
         // The ESC key toggles the visibility of the sprite allow user to see physics debug info
         if (keycode == Input.Keys.ESCAPE)
             drawSprite = !drawSprite;
