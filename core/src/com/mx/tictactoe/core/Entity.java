@@ -1,4 +1,4 @@
-package com.mx.tictactoe;
+package com.mx.tictactoe.core;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
@@ -38,20 +38,6 @@ public class Entity {
         entity.x = x;
     }
 
-    public void traverseX(float targetX, float speed) {
-        while(entity.x < targetX || entity.x > targetX) {
-            // handle moving left
-            if (targetX < entity.x) {
-                setX(entity.x - ENTITY_SPEED * speed);
-            }
-
-            // handle moving right
-            else if (targetX > entity.x) {
-                setX(entity.x + ENTITY_SPEED * speed);
-            }
-        }
-    }
-
     public float getY() {
         return entity.y;
     }
@@ -78,5 +64,6 @@ public class Entity {
 
     public void dispose() {
         texture.dispose();
+        entity = null;
     }
 }

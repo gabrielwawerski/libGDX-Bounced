@@ -3,7 +3,7 @@ package com.mx.tictactoe.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mx.tictactoe.util.Config;
-import com.mx.tictactoe.DropGame;
+import com.mx.tictactoe.core.DropGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.mx.tictactoe.DropGame;
+import com.mx.tictactoe.util.Config;
+import com.mx.tictactoe.core.DropGame;
 
 public class MainMenuScreen implements Screen {
     final DropGame game;
@@ -14,7 +15,7 @@ public class MainMenuScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, com.mx.tictactoe.util.Config.WINDOW_WIDTH, com.mx.tictactoe.util.Config.WINDOW_HEIGHT);
+        camera.setToOrtho(false, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
     }
 
     @Override

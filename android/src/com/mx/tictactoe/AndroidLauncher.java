@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.mx.tictactoe.core.DropGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

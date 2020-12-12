@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.Application;
-import com.mx.tictactoe.util.Config;
 
 /**
  * Main logging class for the game. When using in a new class, add {@code public static final String TAG} field and set it
