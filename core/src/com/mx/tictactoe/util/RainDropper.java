@@ -17,5 +17,6 @@ public class RainDropper {
     public void spawnRaindrop() {
         raindrops.add(new Raindrop(Assets.RAINDROP_TEXTURE));
         timeSinceLastDrop = TimeUtils.nanoTime();
+
     }
 }

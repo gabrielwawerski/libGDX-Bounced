@@ -28,8 +28,9 @@ public class DropGame extends Game {
 
     @Override
     public void dispose() {
-        font.dispose();
         batch.dispose();
+        font.dispose();
+        assets.dispose();
         AssetHandler.getInstance().dispose();
     }
 }

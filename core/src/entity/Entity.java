@@ -1,33 +1,25 @@
-package com.mx.tictactoe.core;
+package entity;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Entity {
-    private Texture texture;
     private Rectangle entity;
+    private float entitySpeed = 1;
 
-    private static final float ENTITY_SPEED = 100;
-
-    public Entity(Texture texture) {
-        this.texture = texture;
+    public Entity() {
         entity = new Rectangle();
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public Rectangle getEntity() {
-        return entity;
+    public boolean overlaps(Entity other) {
+        return entity.overlaps(other.getEntity());
     }
 
     public boolean overlaps(Rectangle other) {
         return entity.overlaps(other);
     }
 
-    public boolean overlaps(Entity other) {
-        return entity.overlaps(other.getEntity());
+    public Rectangle getEntity() {
+        return entity;
     }
 
     public float getX() {
@@ -46,24 +38,31 @@ public class Entity {
         entity.y = y;
     }
 
-    public float getWidth() {
+    public float getEntityWidth() {
         return entity.width;
     }
 
-    public void setWidth(float width) {
+    public void setEntityWidth(float width) {
         entity.width = width;
     }
 
-    public float getHeight() {
+    public float getEntityHeight() {
         return entity.height;
     }
 
-    public void setHeight(float height) {
+    public void setEntityHeight(float height) {
         entity.height = height;
     }
 
+    public float getEntitySpeed() {
+        return entitySpeed;
+    }
+
+    public void setEntitySpeed(float entitySpeed) {
+        this.entitySpeed = entitySpeed;
+    }
+
     public void dispose() {
-        texture.dispose();
         entity = null;
     }
 }
