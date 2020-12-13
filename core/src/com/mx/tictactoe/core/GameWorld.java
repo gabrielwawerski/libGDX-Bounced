@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -20,7 +22,7 @@ import java.util.Iterator;
 import static com.mx.tictactoe.screen.GameScreen.PIXELS_TO_METERS;
 import static com.mx.tictactoe.util.Config.*;
 
-public class GameWorld  implements Disposable {
+public class GameWorld implements Disposable {
     private final GameScreen gameScreen;
     private final DropGame game;
     private final World world;
@@ -28,6 +30,9 @@ public class GameWorld  implements Disposable {
 
     public Player player;
     private int score;
+
+    private Stage stage;
+    private Table table;
 
     private static final float TORQUE = 1f;
     private static final float LINEAR_DAMPING = 2.5f;
@@ -45,6 +50,19 @@ public class GameWorld  implements Disposable {
 
         Assets.RAIN_MUSIC.setLooping(true);
         Assets.RAIN_MUSIC.setVolume(Config.RAIN_VOLUME);
+
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
+        table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+        table.setDebug(true);
+    }
+
+    public void stageAct() {
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     public void update() {
@@ -124,13 +142,13 @@ public class GameWorld  implements Disposable {
         resetScore();
     }
 
-    public void createPlayer(Texture bucketTexture) {
-        player = new Player(bucketTexture);
+    public void createPlayer(Texture texture) {
+        player = new Player(texture);
         initPlayer();
     }
 
     private void initPlayer() {
-        player.init(world.createBody(player.getBodyDef()));
+        player.initBody(world.createBody(player.getBodyDef()));
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(
@@ -182,6 +200,7 @@ public class GameWorld  implements Disposable {
         world.dispose();
         player.dispose();
         game.font.dispose();
+        stage.dispose();
         gameScreen.dispose();
     }
 }

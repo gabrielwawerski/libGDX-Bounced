@@ -31,6 +31,7 @@ public class Player extends Entity {
     public Player(Texture texture) {
 //        setEntityWidth(Config.PLAYER_WIDTH);
 //        setEntityHeight(Config.PLAYER_HEIGHT);
+        this.texture = texture;
         setEntitySpeed(1f);
         sprite = new Sprite(texture);
 
@@ -43,6 +44,8 @@ public class Player extends Entity {
     }
 
     public void update(float torque) {
+        setX((body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f);
+        setY((body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f);
         sprite.setPosition(
                 (body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f,
                 (body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f
@@ -60,18 +63,22 @@ public class Player extends Entity {
         return speed * getEntitySpeed();
     }
 
-    public void moveTopRight() {
+    @Deprecated
+    public void moveUpRight() {
         applyForce(calcSpeed(BIDIRECTIONAL_FORCE), calcSpeed(BIDIRECTIONAL_FORCE));
     }
 
-    public void moveTopLeft() {
+    @Deprecated
+    public void moveUpLeft() {
         applyForce(calcSpeed(-BIDIRECTIONAL_FORCE), calcSpeed(BIDIRECTIONAL_FORCE));
     }
 
+    @Deprecated
     public void moveDownRight() {
         applyForce(calcSpeed(BIDIRECTIONAL_FORCE), calcSpeed(-BIDIRECTIONAL_FORCE));
     }
 
+    @Deprecated
     public void moveDownLeft() {
         applyForce(calcSpeed(-BIDIRECTIONAL_FORCE), calcSpeed(-BIDIRECTIONAL_FORCE));
     }
@@ -111,7 +118,7 @@ public class Player extends Entity {
         energy -= ENERGY_DRAIN;
     }
 
-    public void init(Body body) {
+    public void initBody(Body body) {
         this.body = body;
     }
 

@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mx.tictactoe.Player;
 import com.mx.tictactoe.core.DropGame;
 import com.mx.tictactoe.Raindrop;
@@ -16,7 +18,7 @@ import com.mx.tictactoe.util.Assets;
 import com.mx.tictactoe.util.Config;
 import com.mx.tictactoe.core.GameWorld;
 
-public class GameScreen implements Screen, InputProcessor {
+public class GameScreen implements Screen {
     final DropGame dropGame;
     private GameWorld gameWorld;
     private OrthographicCamera camera;
@@ -36,8 +38,6 @@ public class GameScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Gdx.input.setInputProcessor(this);
-
         if (Config.RAINDROPS_SPAWN) {
             gameWorld.spawnRaindrops();
         }
@@ -56,13 +56,17 @@ public class GameScreen implements Screen, InputProcessor {
 
         // handle more than one button pressed at one time
         if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveTopLeft();
+            player.moveLeft();
+            player.moveUp();
         } else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveDownLeft();
+            player.moveLeft();
+            player.moveDown();
         } else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveDownRight();
+            player.moveRight();
+            player.moveDown();
         } else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveTopRight();
+            player.moveLeft();
+            player.moveUp();
         }
 
         // handle moving
@@ -79,6 +83,11 @@ public class GameScreen implements Screen, InputProcessor {
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !gameWorld.player.didJump()) {
             player.jump();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Config.PLAYER_DRAW = !Config.PLAYER_DRAW;
+        }
+
         System.out.println(gameWorld.player.energy);
 
         gameWorld.update();
@@ -92,6 +101,8 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glClearColor(0.7f, 0.97f, 0.7f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        gameWorld.stageAct();
+
         dropGame.batch.begin();
         dropGame.font.draw(dropGame.batch, "Controls:", 20f, Gdx.graphics.getHeight() * 0.9f);
         dropGame.font.draw(dropGame.batch, "WASD", 20f, Gdx.graphics.getHeight() * 0.9f - 20f);
@@ -101,7 +112,7 @@ public class GameScreen implements Screen, InputProcessor {
         dropGame.font.draw(dropGame.batch, "Score: " + gameWorld.getScore(), Gdx.graphics.getWidth() / 2f - 40f, Gdx.graphics.getHeight() - 20f);
 
         if (Config.PLAYER_DRAW) {
-            Sprite playerSprite = gameWorld.getPlayerSprite();
+            Sprite playerSprite = gameWorld.player.sprite;
 
             dropGame.batch.draw(playerSprite,
                     playerSprite.getX(),
@@ -162,48 +173,5 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         debugRenderer.dispose();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        // The ESC key toggles the visibility of the sprite allow user to see physics debug info
-        if (keycode == Input.Keys.ESCAPE)
-            Config.PLAYER_DRAW = !Config.PLAYER_DRAW;
-        return true;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(float amountX, float amountY) {
-        return false;
     }
 }
