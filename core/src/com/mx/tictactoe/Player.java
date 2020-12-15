@@ -21,16 +21,16 @@ public class Player extends Entity {
     public final float SINGLE_DIRECTIONAL_FORCE = 0.6f;
     private final float DOWN_MOVEMENT_BOOST = 0.15f;
 
-    public static final long MAX_ENERGY = 550;
-    public long energy = MAX_ENERGY;
+    public static final int MAX_ENERGY = 550;
+    public int energy = MAX_ENERGY;
 
     private final long ENERGY_DRAIN = 15;
     public final long ENERGY_RECOVERY_SPEED = 5;
     private boolean jumped = false;
 
     public Player(Texture texture) {
-//        setEntityWidth(Config.PLAYER_WIDTH);
-//        setEntityHeight(Config.PLAYER_HEIGHT);
+        setEntityWidth(Config.PLAYER_WIDTH);
+        setEntityHeight(Config.PLAYER_HEIGHT);
         this.texture = texture;
         setEntitySpeed(1f);
         sprite = new Sprite(texture);
@@ -55,7 +55,7 @@ public class Player extends Entity {
         if (energy == MAX_ENERGY) {
             setJumped(false);
         } else if (energy < MAX_ENERGY) {
-            if(energy + ENERGY_RECOVERY_SPEED > MAX_ENERGY) {
+            if (energy + ENERGY_RECOVERY_SPEED > MAX_ENERGY) {
                 energy = MAX_ENERGY;
             } else {
                 energy += ENERGY_RECOVERY_SPEED;
@@ -119,11 +119,7 @@ public class Player extends Entity {
     }
 
     private void drainEnergy() {
-        if(energy - ENERGY_DRAIN < 0) {
-            energy = 0;
-        } else {
-            energy -= ENERGY_DRAIN;
-        }
+        energy -= ENERGY_DRAIN;
     }
 
     public void initBody(Body body) {

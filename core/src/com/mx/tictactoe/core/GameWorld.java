@@ -1,12 +1,22 @@
 package com.mx.tictactoe.core;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Polyline;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -33,11 +43,15 @@ public class GameWorld implements Disposable {
 
     private Stage stage;
     private Table table;
+    private Skin skin;
+
+    private TextureAtlas textureAtlas;
 
     private static final float TORQUE = 1f;
     private static final float LINEAR_DAMPING = 2.5f;
     /** Force at which to bounce player in the opposite direction, if he exceeds set world bounds */
     private static final float BOUNDS_REPEL_FRC = 2f;
+    public final TextureRegion textureRegion;
 
     public GameWorld(DropGame game, GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -51,13 +65,14 @@ public class GameWorld implements Disposable {
         Assets.RAIN_MUSIC.setLooping(true);
         Assets.RAIN_MUSIC.setVolume(Config.RAIN_VOLUME);
 
+        skin = new Skin(Gdx.files.internal("skin/sgx.json"), new TextureAtlas(Gdx.files.internal("skin/sgx.atlas")));
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-
+        TextArea textArea = new TextArea("test", skin);
+//        stage.addActor(textArea);
+        textureRegion = new TextureRegion(Assets.ENERGY_BAR, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
         table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-        table.setDebug(true);
+
+        Gdx.input.setInputProcessor(stage);
     }
 
     public void stageAct() {
@@ -92,6 +107,7 @@ public class GameWorld implements Disposable {
                 spawnRaindrops();
             }
         }
+        int img = 35;
 
         worldBounds();
     }

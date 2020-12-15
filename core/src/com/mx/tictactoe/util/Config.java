@@ -11,18 +11,18 @@ public final class Config {
 
     //======================
 
-    // bucket settings
+    // player settings
     public static final float PLAYER_RESTITUTION = 0.4f;
     public static final float PLAYER_FRICTION = 0.2f;
     public static final float PLAYER_DENSITY = 0.35f;
 
-    // bucket size
-    public static final int PLAYER_WIDTH = 64;
-    public static final int PLAYER_HEIGHT = 64;
+    // player size
+    public static final float PLAYER_WIDTH = 64f / 2f;
+    public static final float PLAYER_HEIGHT = 64f / 2f;
 
-    // bucket position
-    public static final int PLAYER_POS_X = Gdx.graphics.getWidth() / 2;
-    public static final int PLAYER_POS_Y = PLAYER_HEIGHT / 2;
+    // player position
+    public static final float PLAYER_POS_X = Gdx.graphics.getWidth() / 2f;
+    public static final float PLAYER_POS_Y = PLAYER_HEIGHT / 2f;
 
     //=======================
 

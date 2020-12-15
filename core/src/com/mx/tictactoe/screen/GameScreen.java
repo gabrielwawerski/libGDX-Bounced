@@ -2,15 +2,12 @@ package com.mx.tictactoe.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mx.tictactoe.Player;
 import com.mx.tictactoe.core.DropGame;
 import com.mx.tictactoe.Raindrop;
@@ -24,6 +21,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
     private Matrix4 debugMatrix;
+    private StringBuilder sb;
 
     Vector2 mousePos;
 
@@ -37,6 +35,8 @@ public class GameScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        sb = new StringBuilder();
 
         if (Config.RAINDROPS_SPAWN) {
             gameWorld.spawnRaindrops();
@@ -104,6 +104,9 @@ public class GameScreen implements Screen {
         gameWorld.stageAct();
 
         dropGame.batch.begin();
+        dropGame.font.draw(dropGame.batch, sb.append("Energy: ").append(gameWorld.player.energy).toString(), 10f, 45f);
+
+
         dropGame.font.draw(dropGame.batch, "Controls:", 20f, Gdx.graphics.getHeight() * 0.9f);
         dropGame.font.draw(dropGame.batch, "WASD", 20f, Gdx.graphics.getHeight() * 0.9f - 20f);
         dropGame.font.draw(dropGame.batch, "Space to jump", 20f, Gdx.graphics.getHeight() * 0.9f - 20f * 2f);
@@ -130,7 +133,10 @@ public class GameScreen implements Screen {
             }
         }
 
+        dropGame.batch.draw(gameWorld.textureRegion, 10f, 10f, gameWorld.player.energy / 4f, Assets.ENERGY_BAR.getHeight());
+
         dropGame.batch.end();
+        sb.delete(0, sb.length());
     }
 
     @Override

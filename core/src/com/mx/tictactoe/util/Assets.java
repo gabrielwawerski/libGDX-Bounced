@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 public class Assets {
+    public static final Texture ENERGY_BAR = new Texture("energyBarSmall.png");
     public static final Texture RAINDROP_TEXTURE = new Texture("drop.png");
     public static final Texture PLAYER_TEXTURE = new Texture("bucket.png");
     public static final Music RAIN_MUSIC = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
