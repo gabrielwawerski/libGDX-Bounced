@@ -56,17 +56,17 @@ public class GameScreen implements Screen {
 
         // handle more than one button pressed at one time
         if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveLeft();
             player.moveUp();
+            player.moveLeft();
         } else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveLeft();
             player.moveDown();
+            player.moveLeft();
         } else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight();
             player.moveDown();
+            player.moveRight();
         } else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveLeft();
             player.moveUp();
+            player.moveRight();
         }
 
         // handle moving
@@ -133,7 +133,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        dropGame.batch.draw(gameWorld.textureRegion, 10f, 10f, gameWorld.player.energy / 4f, Assets.ENERGY_BAR.getHeight());
+        dropGame.batch.draw(gameWorld.textureRegion, 10f, 10f, gameWorld.player.energy / 3f, Assets.ENERGY_BAR.getHeight());
 
         dropGame.batch.end();
         sb.delete(0, sb.length());

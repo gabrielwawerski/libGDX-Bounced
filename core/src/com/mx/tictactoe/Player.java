@@ -96,7 +96,7 @@ public class Player extends Entity {
     }
 
     public void moveUp() {
-        applyForce(0, 0);
+        applyForce(0, calcSpeed(DOWN_MOVEMENT_BOOST));
     }
 
     public void moveDown() {
