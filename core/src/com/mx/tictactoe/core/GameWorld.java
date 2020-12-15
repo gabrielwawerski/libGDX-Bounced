@@ -71,7 +71,7 @@ public class GameWorld implements Disposable {
 //        stage.addActor(textArea);
         textureRegion = new TextureRegion(Assets.ENERGY_BAR, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
         table = new Table();
-
+        // todo stage.addActor - textureRegion (TextureRegionDrawable)
         Gdx.input.setInputProcessor(stage);
     }
 
