@@ -55,7 +55,11 @@ public class Player extends Entity {
         if (energy == MAX_ENERGY) {
             setJumped(false);
         } else if (energy < MAX_ENERGY) {
-            energy += ENERGY_RECOVERY_SPEED;
+            if(energy + ENERGY_RECOVERY_SPEED > MAX_ENERGY) {
+                energy = MAX_ENERGY;
+            } else {
+                energy += ENERGY_RECOVERY_SPEED;
+            }
         }
     }
 
@@ -115,7 +119,11 @@ public class Player extends Entity {
     }
 
     private void drainEnergy() {
-        energy -= ENERGY_DRAIN;
+        if(energy - ENERGY_DRAIN < 0) {
+            energy = 0;
+        } else {
+            energy -= ENERGY_DRAIN;
+        }
     }
 
     public void initBody(Body body) {
