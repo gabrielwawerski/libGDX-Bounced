@@ -42,27 +42,20 @@ public class GameWorld implements Disposable {
     public Player player;
     private int score;
 
-    public Stage stage;
-    private Table table;
-    private Skin skin;
-
-    private TextureAtlas textureAtlas;
-
-    private GUI gui;
+    public GUI gui;
 
     private static final float TORQUE = 6f;
-    private static final float LINEAR_DAMPING = 2.5f;
-    private static final float ANGULAR_DAMPLING = 2.5f;
+    private static final float LINEAR_DAMPING = 1.85f;
+    private static final float ANGULAR_DAMPLING = 2f;
     /** Force at which to bounce player in the opposite direction, if he exceeds set world bounds */
     private static final float BOUNDS_REPEL_FRC = 2f;
 //    public final TextureRegion textureRegion;
 
     public GameWorld(DropGame game, GameScreen gameScreen) {
-        gui = GUI.getInstance();
-        gui.setGameWorld(this);
-        this.gameScreen = gameScreen;
         this.game = game;
+        this.gameScreen = gameScreen;
         world = new World(new Vector2(0, -3), true);
+        init(Assets.PLAYER_TEXTURE);
         rainDropper = new RainDropper();
 
         // todo default player implementation
@@ -71,29 +64,18 @@ public class GameWorld implements Disposable {
         Assets.RAIN_MUSIC.setLooping(true);
         Assets.RAIN_MUSIC.setVolume(Config.RAIN_VOLUME);
 
-        skin = new Skin(Gdx.files.internal("skin/sgx.json"), new TextureAtlas(Gdx.files.internal("skin/sgx.atlas")));
-        stage = new Stage();
-        TextArea textArea = new TextArea("test", skin);
-//        stage.addActor(textArea);
-//        textureRegion = new TextureRegion(Assets.ENERGY_BAR, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
-        table = new Table();
-//        stage.addActor();
-//        stage = new Stage(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
-//        MyActor myActor = new MyActor();
-        // todo stage.addActor - textureRegion (TextureRegionDrawable)
+        Stage stage = new Stage(gameScreen.viewport);
         Gdx.input.setInputProcessor(stage);
-    }
-
-    public void stageAct() {
+        gui = new GUI(this, stage, "skin/sgx.json", "skin/sgx.atlas");
     }
 
     public void update() {
         gui.update();
         world.step(1f / 60f, 1, 3);
         player.update(TORQUE);
-        player.getBody().setLinearDamping(1.85f);
-        player.getBody().setAngularDamping(2f);
-        stage.act(Gdx.graphics.getDeltaTime());
+        player.getBody().setLinearDamping(LINEAR_DAMPING);
+        player.getBody().setAngularDamping(ANGULAR_DAMPLING);
+
         if (Config.RAINDROPS_SPAWN) {
             for (Iterator<Raindrop> iter = rainDropper.raindrops.iterator(); iter.hasNext(); ) {
                 Raindrop raindrop = iter.next();
@@ -115,7 +97,6 @@ public class GameWorld implements Disposable {
                 spawnRaindrops();
             }
         }
-        int img = 35;
 
         worldBounds();
     }
@@ -229,7 +210,7 @@ public class GameWorld implements Disposable {
         world.dispose();
         player.dispose();
         game.font.dispose();
-        stage.dispose();
         gameScreen.dispose();
+        gui.dispose();
     }
 }

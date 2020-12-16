@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mx.tictactoe.Player;
 import com.mx.tictactoe.core.DropGame;
 import com.mx.tictactoe.Raindrop;
@@ -23,6 +25,7 @@ public class GameScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private Matrix4 debugMatrix;
     private StringBuilder sb;
+    public Viewport viewport;
 
     Vector2 mousePos;
 
@@ -30,14 +33,15 @@ public class GameScreen implements Screen {
 
     public GameScreen(DropGame dropGame) {
         this.dropGame = dropGame;
-        gameWorld = new GameWorld(dropGame, this);
-        gameWorld.init(Assets.PLAYER_TEXTURE);
+
         mousePos = new Vector2();
         debugRenderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         sb = new StringBuilder();
+
+        gameWorld = new GameWorld(dropGame, this);
 
         if (Config.RAINDROPS_SPAWN) {
             gameWorld.spawnRaindrops();
@@ -49,9 +53,9 @@ public class GameScreen implements Screen {
 
         dropGame.batch.setProjectionMatrix(camera.combined);
 
-        if (Gdx.input.isTouched()) {
-            //
-        }
+//        if (Gdx.input.isTouched()) {
+//            //
+//        }
 
         // handle more than one button pressed at one time
         if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -87,7 +91,7 @@ public class GameScreen implements Screen {
             Config.PLAYER_DRAW = !Config.PLAYER_DRAW;
         }
 
-        System.out.println(gameWorld.player.energy);
+//        System.out.println(gameWorld.player.energy);
 
         gameWorld.update();
     }
@@ -99,12 +103,10 @@ public class GameScreen implements Screen {
     private void drawScene() {
         Gdx.gl.glClearColor(0.7f, 0.97f, 0.7f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        gameWorld.stageAct();
 
         dropGame.batch.begin();
         dropGame.font.draw(dropGame.batch, sb.append("Energy: ").append(gameWorld.player.energy).toString(), 10f, 45f);
-        GUI.getInstance().draw();
-        gameWorld.stage.draw();
+        gameWorld.gui.draw();
 
         dropGame.font.draw(dropGame.batch, "Controls:", 20f, Gdx.graphics.getHeight() * 0.9f);
         dropGame.font.draw(dropGame.batch, "WASD", 20f, Gdx.graphics.getHeight() * 0.9f - 20f);
