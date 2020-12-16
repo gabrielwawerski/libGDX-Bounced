@@ -8,7 +8,7 @@ public class RainDropper {
     public Array<Raindrop> raindrops;
 
     public static long timeSinceLastDrop;
-    public static final long TIME_UNTIL_NEXT_SPAWN = 400000000;
+    public static final long TIME_UNTIL_NEXT_SPAWN = 260000000;
 
     public RainDropper() {
         raindrops = new Array<>();

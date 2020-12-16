@@ -1,6 +1,7 @@
 package com.mx.tictactoe.core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mx.tictactoe.screen.MainMenuScreen;
@@ -8,7 +9,7 @@ import com.mx.tictactoe.util.AssetHandler;
 import com.mx.tictactoe.util.Assets;
 
 public class DropGame extends Game {
-    public SpriteBatch batch;
+    public Batch batch;
     public BitmapFont font;
     public Assets assets;
 
@@ -28,6 +29,7 @@ public class DropGame extends Game {
 
     @Override
     public void dispose() {
+        System.out.println(this.getClass().getSimpleName() + " disposed.");
         batch.dispose();
         font.dispose();
         assets.dispose();

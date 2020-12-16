@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.mx.tictactoe.Player;
 import com.mx.tictactoe.core.DropGame;
 import com.mx.tictactoe.Raindrop;
+import com.mx.tictactoe.core.GUI;
 import com.mx.tictactoe.util.Assets;
 import com.mx.tictactoe.util.Config;
 import com.mx.tictactoe.core.GameWorld;
@@ -42,8 +43,6 @@ public class GameScreen implements Screen {
             gameWorld.spawnRaindrops();
         }
     }
-
-    private float elapsed = 0;
 
     private void updateScene() {
         Player player = gameWorld.player;
@@ -100,12 +99,12 @@ public class GameScreen implements Screen {
     private void drawScene() {
         Gdx.gl.glClearColor(0.7f, 0.97f, 0.7f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         gameWorld.stageAct();
 
         dropGame.batch.begin();
         dropGame.font.draw(dropGame.batch, sb.append("Energy: ").append(gameWorld.player.energy).toString(), 10f, 45f);
-
+        GUI.getInstance().draw();
+        gameWorld.stage.draw();
 
         dropGame.font.draw(dropGame.batch, "Controls:", 20f, Gdx.graphics.getHeight() * 0.9f);
         dropGame.font.draw(dropGame.batch, "WASD", 20f, Gdx.graphics.getHeight() * 0.9f - 20f);
@@ -133,7 +132,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        dropGame.batch.draw(gameWorld.textureRegion, 10f, 10f, gameWorld.player.energy / 3f, Assets.ENERGY_BAR.getHeight());
+//        dropGame.batch.draw(Assets.ENERGY_BAR, 10f, 10f, gameWorld.player.energy / 3f, Assets.ENERGY_BAR.getHeight());
 
         dropGame.batch.end();
         sb.delete(0, sb.length());
@@ -178,6 +177,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        System.out.println(this.getClass().getSimpleName() + " disposed.");
         debugRenderer.dispose();
     }
 }

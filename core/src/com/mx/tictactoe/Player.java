@@ -67,24 +67,25 @@ public class Player extends Entity {
         return speed * getEntitySpeed();
     }
 
+    float div = 2f;
     @Deprecated
     public void moveUpRight() {
-        applyForce(calcSpeed(BIDIRECTIONAL_FORCE), calcSpeed(BIDIRECTIONAL_FORCE));
+        applyForce(calcSpeed(BIDIRECTIONAL_FORCE) / div, calcSpeed(BIDIRECTIONAL_FORCE) / div);
     }
 
     @Deprecated
     public void moveUpLeft() {
-        applyForce(calcSpeed(-BIDIRECTIONAL_FORCE), calcSpeed(BIDIRECTIONAL_FORCE));
+        applyForce(calcSpeed(-BIDIRECTIONAL_FORCE) / div, calcSpeed(BIDIRECTIONAL_FORCE) / div);
     }
 
     @Deprecated
     public void moveDownRight() {
-        applyForce(calcSpeed(BIDIRECTIONAL_FORCE), calcSpeed(-BIDIRECTIONAL_FORCE));
+        applyForce(calcSpeed(BIDIRECTIONAL_FORCE) / div, calcSpeed(-BIDIRECTIONAL_FORCE) / div);
     }
 
     @Deprecated
     public void moveDownLeft() {
-        applyForce(calcSpeed(-BIDIRECTIONAL_FORCE), calcSpeed(-BIDIRECTIONAL_FORCE));
+        applyForce(calcSpeed(-BIDIRECTIONAL_FORCE) / div, calcSpeed(-BIDIRECTIONAL_FORCE) / div);
     }
 
     public void moveLeft() {

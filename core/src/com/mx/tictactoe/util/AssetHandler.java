@@ -3,6 +3,7 @@ package com.mx.tictactoe.util;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.ArrayList;
 
@@ -27,17 +28,11 @@ public final class AssetHandler extends AssetManager {
      * loaded when method finishes.
      */
     public void loadAssets() {
-        instance.load("tile.atlas", TextureAtlas.class);
-        instance.load("player.png", Texture.class);
-        instance.load("enemy.png", Texture.class);
+        instance.load("sgx.json", Skin.class);
         instance.finishLoading();
     }
 
     public void loadAssets(boolean synchronously) {
-        instance.load("tile.atlas", TextureAtlas.class);
-        instance.load("player.png", Texture.class);
-        instance.load("enemy.png", Texture.class);
-
         if (synchronously) {
             instance.finishLoading();
         }

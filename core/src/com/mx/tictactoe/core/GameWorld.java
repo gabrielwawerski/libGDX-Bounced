@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mx.tictactoe.Player;
+import com.mx.tictactoe.core.actor.EnergyBar;
 import com.mx.tictactoe.util.Assets;
 import com.mx.tictactoe.util.RainDropper;
 import com.mx.tictactoe.Raindrop;
@@ -41,19 +42,24 @@ public class GameWorld implements Disposable {
     public Player player;
     private int score;
 
-    private Stage stage;
+    public Stage stage;
     private Table table;
     private Skin skin;
 
     private TextureAtlas textureAtlas;
 
-    private static final float TORQUE = 1f;
+    private GUI gui;
+
+    private static final float TORQUE = 6f;
     private static final float LINEAR_DAMPING = 2.5f;
+    private static final float ANGULAR_DAMPLING = 2.5f;
     /** Force at which to bounce player in the opposite direction, if he exceeds set world bounds */
     private static final float BOUNDS_REPEL_FRC = 2f;
-    public final TextureRegion textureRegion;
+//    public final TextureRegion textureRegion;
 
     public GameWorld(DropGame game, GameScreen gameScreen) {
+        gui = GUI.getInstance();
+        gui.setGameWorld(this);
         this.gameScreen = gameScreen;
         this.game = game;
         world = new World(new Vector2(0, -3), true);
@@ -69,23 +75,25 @@ public class GameWorld implements Disposable {
         stage = new Stage();
         TextArea textArea = new TextArea("test", skin);
 //        stage.addActor(textArea);
-        textureRegion = new TextureRegion(Assets.ENERGY_BAR, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
+//        textureRegion = new TextureRegion(Assets.ENERGY_BAR, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
         table = new Table();
+//        stage.addActor();
+//        stage = new Stage(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+//        MyActor myActor = new MyActor();
         // todo stage.addActor - textureRegion (TextureRegionDrawable)
         Gdx.input.setInputProcessor(stage);
     }
 
     public void stageAct() {
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
     }
 
     public void update() {
+        gui.update();
         world.step(1f / 60f, 1, 3);
         player.update(TORQUE);
-        player.getBody().setLinearDamping(1.6f);
-        player.getBody().setAngularDamping(0.5f);
-
+        player.getBody().setLinearDamping(1.85f);
+        player.getBody().setAngularDamping(2f);
+        stage.act(Gdx.graphics.getDeltaTime());
         if (Config.RAINDROPS_SPAWN) {
             for (Iterator<Raindrop> iter = rainDropper.raindrops.iterator(); iter.hasNext(); ) {
                 Raindrop raindrop = iter.next();
@@ -119,26 +127,26 @@ public class GameWorld implements Disposable {
         // left bound
         if (player.getSprite().getX() - 5 <= 0) {
             player.applyForce(BOUNDS_REPEL_FRC, 0);
-            player.setLinearDamping(LINEAR_DAMPING);
+//            player.setLinearDamping(LINEAR_DAMPING);
         }
 
         // right bound
         if (player.getSprite().getX() >= Gdx.graphics.getWidth() - player.getSprite().getWidth() / 2 - 5) {
 //            body.setLinearVelocity(-1.5f, body.getLinearVelocity().y);
             player.applyForce(-BOUNDS_REPEL_FRC, 0);
-            player.setLinearDamping(LINEAR_DAMPING);
+//            player.setLinearDamping(LINEAR_DAMPING);
         }
 
         // up bound
         if (player.getSprite().getY() + player.getSprite().getHeight() / 2 - 2 >= Gdx.graphics.getHeight()) {
             player.applyForce(0, -BOUNDS_REPEL_FRC);
-            player.setLinearDamping(LINEAR_DAMPING);
+//            player.setLinearDamping(LINEAR_DAMPING);
         }
 
         // down bound
         if (player.getSprite().getY() - 2 <= 0) {
             player.applyForce(0, BOUNDS_REPEL_FRC);
-            player.setLinearDamping(LINEAR_DAMPING);
+//            player.setLinearDamping(LINEAR_DAMPING);
         }
     }
 
@@ -186,6 +194,10 @@ public class GameWorld implements Disposable {
         player.getBody().setAngularDamping(0.5f);
     }
 
+    public DropGame getGame() {
+        return game;
+    }
+
     public World getWorld() {
         return world;
     }
@@ -213,6 +225,7 @@ public class GameWorld implements Disposable {
 
     @Override
     public void dispose() {
+        System.out.println(this.getClass().getSimpleName() + " disposed.");
         world.dispose();
         player.dispose();
         game.font.dispose();
