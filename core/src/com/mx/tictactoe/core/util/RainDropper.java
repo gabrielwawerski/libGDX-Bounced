@@ -1,8 +1,9 @@
-package com.mx.tictactoe.util;
+package com.mx.tictactoe.core.util;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mx.tictactoe.Raindrop;
+import com.mx.tictactoe.actor.actors.Raindrop;
+import com.mx.tictactoe.core.util.assets.Assets;
 
 public class RainDropper {
     public Array<Raindrop> raindrops;

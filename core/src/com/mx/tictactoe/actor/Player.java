@@ -1,24 +1,27 @@
-package com.mx.tictactoe;
+package com.mx.tictactoe.actor;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import entity.Entity;
-import com.mx.tictactoe.util.Config;
+import com.mx.tictactoe.core.GameWorld;
+import com.mx.tictactoe.core.util.Config;
 import com.mx.tictactoe.screen.GameScreen;
+import com.mx.tictactoe.actor.interfaces.GameObject;
 
 import static com.mx.tictactoe.screen.GameScreen.PIXELS_TO_METERS;
+import static com.mx.tictactoe.core.util.Config.*;
 
-public class Player extends Entity {
+public class Player extends Actor implements GameObject {
     private Body body;
     private Texture texture;
     public final Sprite sprite;
     private final BodyDef bodyDef;
 
-
     public final float BIDIRECTIONAL_FORCE = 1f;
-    public final float SINGLE_DIRECTIONAL_FORCE = 0.6f;
+    public final float SINGLE_DIRECTIONAL_FORCE = 0.57f;
     private final float DOWN_MOVEMENT_BOOST = 0.15f;
 
     public static final int MAX_ENERGY = 550;
@@ -43,14 +46,15 @@ public class Player extends Entity {
         );
     }
 
-    public void update(float torque) {
+    @Override
+    public void update() {
         setX((body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f);
         setY((body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f);
-        sprite.setPosition(
-                (body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f,
-                (body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f
-        );
-        body.applyTorque(torque, true);
+//        sprite.setPosition(
+//                (body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f,
+//                (body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f
+//        );
+        body.applyTorque(GameWorld.TORQUE, true);
 
         if (energy == MAX_ENERGY) {
             setJumped(false);
@@ -61,31 +65,52 @@ public class Player extends Entity {
                 energy += ENERGY_RECOVERY_SPEED;
             }
         }
+
+        // handle more than one button pressed at one time
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
+            moveUp();
+            moveLeft();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.S)) {
+            moveDown();
+            moveLeft();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
+            moveDown();
+            moveRight();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)) {
+            moveUp();
+            moveRight();
+        }
+
+        // handle moving
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            moveLeft();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            moveDown();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            moveRight();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            moveUp();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !didJump()) {
+            jump();
+        }
+    }
+
+    @Override
+    public void setX(float x) {
+        entity.x = x;
+        sprite.setX(x);
+    }
+
+    @Override
+    public void setY(float y) {
+        entity.y = y;
+        sprite.setY(y);
     }
 
     public float calcSpeed(float speed) {
         return speed * getEntitySpeed();
-    }
-
-    float div = 2f;
-    @Deprecated
-    public void moveUpRight() {
-        applyForce(calcSpeed(BIDIRECTIONAL_FORCE) / div, calcSpeed(BIDIRECTIONAL_FORCE) / div);
-    }
-
-    @Deprecated
-    public void moveUpLeft() {
-        applyForce(calcSpeed(-BIDIRECTIONAL_FORCE) / div, calcSpeed(BIDIRECTIONAL_FORCE) / div);
-    }
-
-    @Deprecated
-    public void moveDownRight() {
-        applyForce(calcSpeed(BIDIRECTIONAL_FORCE) / div, calcSpeed(-BIDIRECTIONAL_FORCE) / div);
-    }
-
-    @Deprecated
-    public void moveDownLeft() {
-        applyForce(calcSpeed(-BIDIRECTIONAL_FORCE) / div, calcSpeed(-BIDIRECTIONAL_FORCE) / div);
     }
 
     public void moveLeft() {
@@ -111,6 +136,7 @@ public class Player extends Entity {
         }
     }
 
+
     public void applyForce(float forceX, float forceY) {
         body.applyForce(new Vector2(forceX, forceY), body.getPosition(), true);
     }
@@ -123,8 +149,29 @@ public class Player extends Entity {
         energy -= ENERGY_DRAIN;
     }
 
-    public void initBody(Body body) {
-        this.body = body;
+
+    @Override
+    public void init(World world) {
+        body = world.createBody(getBodyDef());
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(
+                16f / PIXELS_TO_METERS,
+                16f / PIXELS_TO_METERS
+        );
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = PLAYER_DENSITY;
+        fixtureDef.friction = PLAYER_FRICTION;
+        fixtureDef.restitution = PLAYER_RESTITUTION;
+        Fixture fixture = body.createFixture(fixtureDef);
+        // shape no longer needed
+        shape.dispose();
+
+        getBody().setLinearVelocity(2f, 2f);
+//        getSprite().setRotation((float) Math.toDegrees(getBody().getAngle()));
+        getBody().setLinearDamping(1.5f);
+        getBody().setAngularDamping(0.5f);
     }
 
     public BodyDef getBodyDef() {

@@ -1,8 +1,6 @@
-package com.mx.tictactoe.util;
+package com.mx.tictactoe.core.util.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.ArrayList;

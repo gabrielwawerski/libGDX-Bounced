@@ -10,12 +10,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mx.tictactoe.Player;
-import com.mx.tictactoe.core.DropGame;
-import com.mx.tictactoe.Raindrop;
-import com.mx.tictactoe.core.GUI;
-import com.mx.tictactoe.util.Assets;
-import com.mx.tictactoe.util.Config;
+import com.mx.tictactoe.actor.Player;
+import com.mx.tictactoe.DropGame;
+import com.mx.tictactoe.actor.actors.Raindrop;
+import com.mx.tictactoe.core.util.assets.Assets;
+import com.mx.tictactoe.core.util.Config;
 import com.mx.tictactoe.core.GameWorld;
 
 public class GameScreen implements Screen {
@@ -50,53 +49,19 @@ public class GameScreen implements Screen {
 
     private void updateScene() {
         Player player = gameWorld.player;
-
         dropGame.batch.setProjectionMatrix(camera.combined);
-
-//        if (Gdx.input.isTouched()) {
-//            //
-//        }
-
-        // handle more than one button pressed at one time
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveUp();
-            player.moveLeft();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveDown();
-            player.moveLeft();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveDown();
-            player.moveRight();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveUp();
-            player.moveRight();
-        }
-
-        // handle moving
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.moveLeft();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.moveDown();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.moveUp();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !gameWorld.player.didJump()) {
-            player.jump();
-        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Config.PLAYER_DRAW = !Config.PLAYER_DRAW;
         }
-
-//        System.out.println(gameWorld.player.energy);
-
         gameWorld.update();
+
+//        if (Gdx.input.isTouched()) {
+//            //
+//        }
     }
 
-    private void textDrawHelper(String... lines) {
+    private void textBlock(String... lines) {
         // single line into multi line with \n
     }
 
@@ -124,6 +89,8 @@ public class GameScreen implements Screen {
                     playerSprite.getOriginX(),
                     playerSprite.getOriginY());
         }
+
+        dropGame.batch.draw(gameWorld.rightWall.sprite, 10f, 10f);
 
 //        game.batch.draw(player.getTexture(), player.getX(), player.getY());
 
@@ -180,6 +147,8 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         System.out.println(this.getClass().getSimpleName() + " disposed.");
+        dropGame.dispose();
         debugRenderer.dispose();
+        debugMatrix = null;
     }
 }

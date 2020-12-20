@@ -1,11 +1,12 @@
 package com.mx.tictactoe.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.mx.tictactoe.util.Config;
-import com.mx.tictactoe.core.DropGame;
+import com.mx.tictactoe.core.util.Config;
+import com.mx.tictactoe.DropGame;
 
 public class MainMenuScreen implements Screen {
     final DropGame game;
@@ -28,10 +29,10 @@ public class MainMenuScreen implements Screen {
 
         game.batch.begin();
         game.font.draw(game.batch, "Welcome to Drop! v0.1", 100, 150);
-        game.font.draw(game.batch, "Tap to begin", 100, 125);
+        game.font.draw(game.batch, "Press any key to begin", 100, 125);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
             game.setScreen(new GameScreen(game));
             dispose();
         }

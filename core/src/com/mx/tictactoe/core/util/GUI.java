@@ -1,16 +1,12 @@
-package com.mx.tictactoe.core;
+package com.mx.tictactoe.core.util;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
-import com.mx.tictactoe.core.actor.EnergyBar;
-import com.mx.tictactoe.util.Assets;
+import com.mx.tictactoe.core.GameWorld;
+import com.mx.tictactoe.actor.actors.EnergyBar;
 
 public class GUI implements Disposable {
     private GameWorld gameWorld;

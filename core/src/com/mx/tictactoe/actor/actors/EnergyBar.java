@@ -1,34 +1,28 @@
-package com.mx.tictactoe.core.actor;
+package com.mx.tictactoe.actor.actors;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mx.tictactoe.Player;
-import com.mx.tictactoe.util.Assets;
+import com.mx.tictactoe.actor.Player;
+import com.mx.tictactoe.core.util.assets.Assets;
 
-public class EnergyBar extends Actor {
+public class EnergyBar extends com.mx.tictactoe.actor.Actor {
     private TextureRegion textureRegion = new TextureRegion(
             Assets.ENERGY_BAR, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
 
     private Player player;
 
-    float actorX;
-    float actorY;
-    public boolean started = false;
+    public boolean isTouched = false;
     public boolean scaled = false;
     public boolean isOver = false;
 
     public EnergyBar(float actorX, float actorY, Player player) {
-        setBounds(actorX, actorY, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
         this.player = player;
-
-        this.actorX = actorX;
-        this.actorY = actorY;
+        set(actorX, actorY);
+        setBounds(actorX, actorY, Assets.ENERGY_BAR.getWidth(), Assets.ENERGY_BAR.getHeight());
     }
 
     @Override
@@ -37,15 +31,7 @@ public class EnergyBar extends Actor {
 
         addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                ((EnergyBar) event.getTarget()).started = true;
-                return true;
-            }
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.SPACE) {
-                    player.jump();
-                }
+                ((EnergyBar) event.getTarget()).isTouched = true;
                 return true;
             }
         });
@@ -53,49 +39,40 @@ public class EnergyBar extends Actor {
         addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                super.enter(event, x, y, pointer, fromActor);
+                System.out.println("in!");
                 ((EnergyBar) event.getTarget()).isOver = true;
+
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                super.exit(event, x, y, pointer, toActor);
+                System.out.println("out!");
                 ((EnergyBar) event.getTarget()).isOver = false;
             }
         });
-
     }
 
-    // TODO figure me out
     @Override
     public void act(float delta) {
         super.act(delta);
 
-        if (started) {
+        if (isTouched) {
             System.out.println("acted out!");
-            started = false;
+            isTouched = false;
         }
 
         if (isOver) {
             if (!scaled) {
-//            sizeBy(0.25f);
-                System.out.println("is Over! SCAILING");
-                setSize(1.5f, 1.5f);
+                scaleBy(1f);
+                System.out.println("isOver! SCAILING");
                 scaled = true;
             }
         } else if (!isOver && scaled) {
-            setWidth(300);
-            setHeight(80);
+            setScale(1f, 1f);
             scaled = false;
         }
-    }
-
-    private void onOver() {
-        System.out.println("onOver!");
-
-    }
-
-    private void onExit() {
-        System.out.println("onExit!");
-
     }
 
     @Override
@@ -108,13 +85,5 @@ public class EnergyBar extends Actor {
 
     public TextureRegion getTextureRegion() {
         return textureRegion;
-    }
-
-    public float getActorX() {
-        return actorX;
-    }
-
-    public float getActorY() {
-        return actorY;
     }
 }

@@ -1,12 +1,12 @@
-package com.mx.tictactoe.core;
+package com.mx.tictactoe;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mx.tictactoe.screen.MainMenuScreen;
-import com.mx.tictactoe.util.AssetHandler;
-import com.mx.tictactoe.util.Assets;
+import com.mx.tictactoe.core.util.assets.AssetHandler;
+import com.mx.tictactoe.core.util.assets.Assets;
 
 public class DropGame extends Game {
     public Batch batch;

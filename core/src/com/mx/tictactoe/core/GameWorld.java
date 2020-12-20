@@ -1,80 +1,74 @@
 package com.mx.tictactoe.core;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mx.tictactoe.Player;
-import com.mx.tictactoe.core.actor.EnergyBar;
-import com.mx.tictactoe.util.Assets;
-import com.mx.tictactoe.util.RainDropper;
-import com.mx.tictactoe.Raindrop;
+import com.mx.tictactoe.DropGame;
+import com.mx.tictactoe.actor.Player;
+import com.mx.tictactoe.core.util.GUI;
+import com.mx.tictactoe.core.util.assets.Assets;
+import com.mx.tictactoe.core.util.RainDropper;
+import com.mx.tictactoe.actor.actors.Raindrop;
 import com.mx.tictactoe.screen.GameScreen;
-import com.mx.tictactoe.util.Config;
+import com.mx.tictactoe.core.util.Config;
+import com.mx.tictactoe.actor.interfaces.GameObject;
+import com.mx.tictactoe.actor.actors.Wall;
 
 import java.util.Iterator;
 
-import static com.mx.tictactoe.screen.GameScreen.PIXELS_TO_METERS;
-import static com.mx.tictactoe.util.Config.*;
-
 public class GameWorld implements Disposable {
     private final GameScreen gameScreen;
-    private final DropGame game;
+    private final com.mx.tictactoe.DropGame game;
     private final World world;
     private final RainDropper rainDropper;
 
     public Player player;
     private int score;
 
-    public GUI gui;
+    public com.mx.tictactoe.core.util.GUI gui;
 
-    private static final float TORQUE = 6f;
+    private Array<GameObject> objects;
+
+    private BodyDef wallBodydef;
+
+    public static final float TORQUE = 6f;
     private static final float LINEAR_DAMPING = 1.85f;
     private static final float ANGULAR_DAMPLING = 2f;
-    /** Force at which to bounce player in the opposite direction, if he exceeds set world bounds */
+    /**
+     * Force at which to bounce player in the opposite direction, if he exceeds set world bounds
+     */
     private static final float BOUNDS_REPEL_FRC = 2f;
-//    public final TextureRegion textureRegion;
+    public Wall rightWall;
+    public Wall upWall;
+    public Wall downWall;
+    public Wall leftWall;
 
-    public GameWorld(DropGame game, GameScreen gameScreen) {
+    public GameWorld(com.mx.tictactoe.DropGame game, GameScreen gameScreen) {
         this.game = game;
         this.gameScreen = gameScreen;
-        world = new World(new Vector2(0, -3), true);
-        init(Assets.PLAYER_TEXTURE);
+        world = new World(new Vector2(Config.GRAVITY_X, Config.GRAVITY_Y), true);
         rainDropper = new RainDropper();
+        init();
 
         // todo default player implementation
 //        createPlayer(player)
-
-        Assets.RAIN_MUSIC.setLooping(true);
-        Assets.RAIN_MUSIC.setVolume(Config.RAIN_VOLUME);
-
-        Stage stage = new Stage(gameScreen.viewport);
-        Gdx.input.setInputProcessor(stage);
-        gui = new GUI(this, stage, "skin/sgx.json", "skin/sgx.atlas");
     }
 
     public void update() {
         gui.update();
-        world.step(1f / 60f, 1, 3);
-        player.update(TORQUE);
+        world.step(Config.TIME_STEP, Config.VELOCITY_ITERATIONS, Config.POSITION_ITERATIONS);
+        player.update();
         player.getBody().setLinearDamping(LINEAR_DAMPING);
         player.getBody().setAngularDamping(ANGULAR_DAMPLING);
+
+        for (GameObject object : objects) {
+            object.update();
+        }
 
         if (Config.RAINDROPS_SPAWN) {
             for (Iterator<Raindrop> iter = rainDropper.raindrops.iterator(); iter.hasNext(); ) {
@@ -87,7 +81,7 @@ public class GameWorld implements Disposable {
                 }
 
                 // remove raindrop if bucket collected it
-                if (raindrop.overlaps(player.getEntity())) {
+                if (raindrop.overlaps(player)) {
                     iter.remove();
                     addScore();
                 }
@@ -99,6 +93,10 @@ public class GameWorld implements Disposable {
         }
 
         worldBounds();
+    }
+
+    public Array<GameObject> getObjects() {
+        return objects;
     }
 
     /**
@@ -113,7 +111,6 @@ public class GameWorld implements Disposable {
 
         // right bound
         if (player.getSprite().getX() >= Gdx.graphics.getWidth() - player.getSprite().getWidth() / 2 - 5) {
-//            body.setLinearVelocity(-1.5f, body.getLinearVelocity().y);
             player.applyForce(-BOUNDS_REPEL_FRC, 0);
 //            player.setLinearDamping(LINEAR_DAMPING);
         }
@@ -142,37 +139,50 @@ public class GameWorld implements Disposable {
         rainDropper.spawnRaindrop();
     }
 
-    public void init(Texture texture) {
-        createPlayer(texture);
+    public void init() {
+        objects = new Array<>();
+        player = new Player(Assets.PLAYER_TEXTURE);
+        initBodies();
+
+        objects.add(player);
+        initWalls();
+
+        Assets.RAIN_MUSIC.setLooping(true);
+        Assets.RAIN_MUSIC.setVolume(Config.RAIN_VOLUME);
+
+        Stage stage = new Stage(gameScreen.viewport);
+        Gdx.input.setInputProcessor(stage);
+        gui = new GUI(this, stage, "skin/sgx.json", "skin/sgx.atlas");
+
+
+        initObjects();
         resetScore();
     }
 
-    public void createPlayer(Texture texture) {
-        player = new Player(texture);
-        initPlayer();
+    // BodyDef, FixtureDef here?
+    private void initBodies() {
     }
 
-    private void initPlayer() {
-        player.initBody(world.createBody(player.getBodyDef()));
+    private void initObjects() {
+        for (GameObject object : objects) {
+            object.init(world);
+        }
+    }
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(
-                player.sprite.getWidth() / 2 / PIXELS_TO_METERS,
-                player.sprite.getHeight() / 2 / PIXELS_TO_METERS
-        );
+    public void initWalls() {
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
+        float dstFromScreen = 2f;
+        float wallWidth = 2f;
 
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = PLAYER_DENSITY;
-        fixtureDef.friction = PLAYER_FRICTION;
-        fixtureDef.restitution = PLAYER_RESTITUTION;
-        Fixture fixture = player.getBody().createFixture(fixtureDef);
-        shape.dispose();
-        player.getBody().setLinearVelocity(2f, 2f);
-
-        player.getSprite().setRotation((float) Math.toDegrees(player.getBody().getAngle()));
-        player.getBody().setLinearDamping(1.5f);
-        player.getBody().setAngularDamping(0.5f);
+        rightWall = new Wall(wallWidth, height, width - dstFromScreen, height);
+        upWall = new Wall(width, wallWidth, width, height - dstFromScreen);
+        leftWall = new Wall(wallWidth, height, dstFromScreen, height);
+        downWall = new Wall(width, wallWidth, width, dstFromScreen);
+        objects.add(rightWall);
+        objects.add(upWall);
+        objects.add(leftWall);
+        objects.add(downWall);
     }
 
     public DropGame getGame() {
@@ -209,8 +219,11 @@ public class GameWorld implements Disposable {
         System.out.println(this.getClass().getSimpleName() + " disposed.");
         world.dispose();
         player.dispose();
-        game.font.dispose();
-        gameScreen.dispose();
         gui.dispose();
+        gameScreen.dispose();
+
+        for (GameObject object : objects) {
+//            object.dispose();
+        }
     }
 }

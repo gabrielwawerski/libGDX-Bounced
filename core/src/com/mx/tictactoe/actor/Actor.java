@@ -1,25 +1,22 @@
-package entity;
+package com.mx.tictactoe.actor;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public class Entity {
-    private Rectangle entity;
+public class Actor extends com.badlogic.gdx.scenes.scene2d.Actor {
+    protected Rectangle entity;
     private float entitySpeed = 1;
 
-    public Entity() {
+    public Actor() {
         entity = new Rectangle();
     }
 
-    public boolean overlaps(Entity other) {
+    public boolean overlaps(Actor other) {
         return entity.overlaps(other.getEntity());
     }
 
-    public boolean overlaps(Rectangle other) {
-        return entity.overlaps(other);
-    }
-
-    public Rectangle getEntity() {
-        return entity;
+    public void set(float x, float y) {
+        setX(x);
+        setY(y);
     }
 
     public float getX() {
@@ -60,6 +57,10 @@ public class Entity {
 
     public void setEntitySpeed(float entitySpeed) {
         this.entitySpeed = entitySpeed;
+    }
+
+    public Rectangle getEntity() {
+        return entity;
     }
 
     public void dispose() {
