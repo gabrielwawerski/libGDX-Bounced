@@ -32,6 +32,7 @@ public class Wall extends Actor implements GameObject {
     private void initShape(float x, float y) {
         shape = new PolygonShape();
         shape.setAsBox(x / GameScreen.PIXELS_TO_METERS, y / GameScreen.PIXELS_TO_METERS);
+        set(x / GameScreen.PIXELS_TO_METERS, y / GameScreen.PIXELS_TO_METERS);
     }
 
     @Override
@@ -46,13 +47,14 @@ public class Wall extends Actor implements GameObject {
         Fixture fixture = body.createFixture(fixtureDef);
     }
 
-    private void setX() {
-
+    private void set() {
+        entity.x = body.getPosition().x;
+        entity.y = body.getPosition().y;
     }
 
     @Override
     public void update() {
-        // i'm a wall
+        set();
     }
 
     public BodyDef getBodyDef() {

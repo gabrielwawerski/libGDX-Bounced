@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mx.tictactoe.actor.actors.Raindrop;
+import com.mx.tictactoe.actor.actors.Wall;
 import com.mx.tictactoe.core.GameWorld;
 import com.mx.tictactoe.core.util.Config;
 import com.mx.tictactoe.screen.GameScreen;
@@ -20,12 +22,15 @@ public class Player extends Actor implements GameObject {
     public final Sprite sprite;
     private final BodyDef bodyDef;
 
-    public final float BIDIRECTIONAL_FORCE = 1f;
-    public final float SINGLE_DIRECTIONAL_FORCE = 0.57f;
-    private final float DOWN_MOVEMENT_BOOST = 0.15f;
+    public final float BIDIRECTIONAL_FORCE = 0.2f;
+    public final float SINGLE_DIRECTIONAL_FORCE = 0.37f;
+    private final float DOWN_MOVEMENT_BOOST = 0.05f;
 
     public static final int MAX_ENERGY = 550;
     public int energy = MAX_ENERGY;
+
+    public static final int MAX_HEALTH = 550;
+    public int health = 550;
 
     private final long ENERGY_DRAIN = 15;
     public final long ENERGY_RECOVERY_SPEED = 5;
@@ -56,6 +61,10 @@ public class Player extends Actor implements GameObject {
         }
     }
 
+    private float getSpeed() {
+        return body.getLinearVelocity().x;
+    }
+
     @Override
     public void update() {
         setX((body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f);
@@ -63,6 +72,8 @@ public class Player extends Actor implements GameObject {
         body.applyTorque(GameWorld.TORQUE, true);
 
         handleEnergy();
+
+        System.out.println(health);
 
         // handle more than one button pressed at one time
         if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -157,6 +168,18 @@ public class Player extends Actor implements GameObject {
 //        getSprite().setRotation((float) Math.toDegrees(getBody().getAngle()));
         getBody().setLinearDamping(1.5f);
         getBody().setAngularDamping(0.5f);
+    }
+
+    @Override
+    public boolean overlaps(Actor other) {
+//        System.out.println("overlaps!");
+        if (entity.overlaps(other.getEntity()) && getSpeed() > 2.5f) {
+            if (other instanceof Wall) {
+                health -= 3;
+                return true;
+            }
+        }
+        return super.overlaps(other);
     }
 
     @Override

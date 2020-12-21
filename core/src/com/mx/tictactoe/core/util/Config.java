@@ -4,27 +4,33 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 public final class Config {
-    // window size
-    public static final int WINDOW_WIDTH = 1920;
-    public static final int WINDOW_HEIGHT = 1080;
+    // Window settings
+    public static final String WINDOW_TITLE = "Drop Game";
+    public static final int WINDOW_WIDTH = 1280;
+    public static final int WINDOW_HEIGHT = 720;
+    public static final boolean FULLSCREEN = false;
+    public static final boolean WINDOW_RESIZABLE = false;
+    public static final boolean WINDOW_UNDECORATED = true;
+    // means paused when in background
+    public static final int PAUSE_WHEN_BACKGROUND = -1;
+    public static final boolean V_SYNC_ENABLED = false;
 
     // World settings
     public static final int GRAVITY_X = 0;
-    public static final int GRAVITY_Y = -3;
+    public static final int GRAVITY_Y = -10;
     public static final float TIME_STEP = 1f / 60f;
     public static final int VELOCITY_ITERATIONS = 1;
     public static final int POSITION_ITERATIONS = 1;
 
-
     //======================
-    // PLAYER SETTINGS
+    // Player settings
 
     // density, usually in kg/m^2.
-    public static final float PLAYER_DENSITY = 0.6f;
+    public static final float PLAYER_DENSITY = 1.0f;
     // friction coefficient, usually in the range [0,1]. ?
-    public static final float PLAYER_FRICTION = 0.2f;
+    public static final float PLAYER_FRICTION = 0.1f;
     // restitution (elasticity), usually in the range [0,1].
-    public static final float PLAYER_RESTITUTION = 0.4f;
+    public static final float PLAYER_RESTITUTION = 0.2f;
     // player size
     public static final float PLAYER_WIDTH = 128f / 2f;
     public static final float PLAYER_HEIGHT = 128f / 2f;
