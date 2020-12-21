@@ -46,25 +46,23 @@ public class Player extends Actor implements GameObject {
         );
     }
 
+    private void handleEnergy() {
+        if (energy < MAX_ENERGY) {
+            energy += ENERGY_RECOVERY_SPEED;
+
+            if (energy + ENERGY_RECOVERY_SPEED > MAX_ENERGY) {
+                energy = MAX_ENERGY;
+            }
+        }
+    }
+
     @Override
     public void update() {
         setX((body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f);
         setY((body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f);
-//        sprite.setPosition(
-//                (body.getPosition().x * PIXELS_TO_METERS) - Config.PLAYER_WIDTH / 2f,
-//                (body.getPosition().y * PIXELS_TO_METERS) - Config.PLAYER_HEIGHT / 2f
-//        );
         body.applyTorque(GameWorld.TORQUE, true);
 
-        if (energy == MAX_ENERGY) {
-            setJumped(false);
-        } else if (energy < MAX_ENERGY) {
-            if (energy + ENERGY_RECOVERY_SPEED > MAX_ENERGY) {
-                energy = MAX_ENERGY;
-            } else {
-                energy += ENERGY_RECOVERY_SPEED;
-            }
-        }
+        handleEnergy();
 
         // handle more than one button pressed at one time
         if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -97,18 +95,6 @@ public class Player extends Actor implements GameObject {
         }
     }
 
-    @Override
-    public void setX(float x) {
-        entity.x = x;
-        sprite.setX(x);
-    }
-
-    @Override
-    public void setY(float y) {
-        entity.y = y;
-        sprite.setY(y);
-    }
-
     public float calcSpeed(float speed) {
         return speed * getEntitySpeed();
     }
@@ -136,19 +122,18 @@ public class Player extends Actor implements GameObject {
         }
     }
 
-
     public void applyForce(float forceX, float forceY) {
         body.applyForce(new Vector2(forceX, forceY), body.getPosition(), true);
     }
 
-    public void setLinearDamping(float linearDamping) {
-        body.setLinearDamping(linearDamping);
-    }
-
     private void drainEnergy() {
-        energy -= ENERGY_DRAIN;
+        if (energy < 0) {
+            energy = 0;
+        } else if (energy > MAX_ENERGY) {
+            energy = MAX_ENERGY;
+        } else
+            energy -= ENERGY_DRAIN;
     }
-
 
     @Override
     public void init(World world) {
@@ -174,6 +159,28 @@ public class Player extends Actor implements GameObject {
         getBody().setAngularDamping(0.5f);
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+
+    }
+
+    @Override
+    public void setX(float x) {
+        entity.x = x;
+        sprite.setX(x);
+    }
+
+    @Override
+    public void setY(float y) {
+        entity.y = y;
+        sprite.setY(y);
+    }
+
+    public void setLinearDamping(float linearDamping) {
+        body.setLinearDamping(linearDamping);
+    }
+
     public BodyDef getBodyDef() {
         return bodyDef;
     }
@@ -188,10 +195,6 @@ public class Player extends Actor implements GameObject {
 
     public Texture getTexture() {
         return texture;
-    }
-
-    public void switchJumped() {
-        jumped = !jumped;
     }
 
     public void setJumped(boolean jumped) {

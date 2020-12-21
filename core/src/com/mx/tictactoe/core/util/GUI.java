@@ -3,6 +3,7 @@ package com.mx.tictactoe.core.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
 import com.mx.tictactoe.core.GameWorld;
@@ -21,10 +22,13 @@ public class GUI implements Disposable {
         energyBar = new EnergyBar(10f, 10f, gameWorld.player);
         skin = new Skin(Gdx.files.internal(skinFilePath), new TextureAtlas(Gdx.files.internal(textureAtlasPath)));
 
+        Button button = new Button(skin);
+
 //        ScaleToAction scaleToAction = new ScaleToAction();
 //        scaleToAction.setScale(1.65f);
 //        energyBar.addAction(scaleToAction);
         stage.addActor(energyBar);
+        stage.addActor(button);
     }
 
     public void update() {
@@ -38,7 +42,8 @@ public class GUI implements Disposable {
 
     @Override
     public void dispose() {
-        skin.dispose();
         stage.dispose();
+        skin.dispose();
+        energyBar.dispose();
     }
 }

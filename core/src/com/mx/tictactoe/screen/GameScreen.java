@@ -51,8 +51,10 @@ public class GameScreen implements Screen {
         Player player = gameWorld.player;
         dropGame.batch.setProjectionMatrix(camera.combined);
 
+        // quit game
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Config.PLAYER_DRAW = !Config.PLAYER_DRAW;
+            gameWorld.dispose();
+            Gdx.app.exit();
         }
         gameWorld.update();
 
@@ -90,8 +92,6 @@ public class GameScreen implements Screen {
                     playerSprite.getOriginY());
         }
 
-        dropGame.batch.draw(gameWorld.rightWall.sprite, 10f, 10f);
-
 //        game.batch.draw(player.getTexture(), player.getX(), player.getY());
 
         if (Config.RAINDROPS_SPAWN) {
@@ -126,7 +126,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
@@ -147,7 +146,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         System.out.println(this.getClass().getSimpleName() + " disposed.");
-        dropGame.dispose();
         debugRenderer.dispose();
         debugMatrix = null;
     }

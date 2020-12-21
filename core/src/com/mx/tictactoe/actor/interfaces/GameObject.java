@@ -7,5 +7,5 @@ public interface GameObject {
 
     void update();
 
-//  void dispose();
+    void dispose();
 }

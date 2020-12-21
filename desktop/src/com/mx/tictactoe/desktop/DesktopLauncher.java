@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.title = "Drop Game";
 		config.width = Config.WINDOW_WIDTH;
 		config.height = Config.WINDOW_HEIGHT;
+		config.fullscreen = true;
 		new LwjglApplication(new DropGame(), config);
 	}
 }

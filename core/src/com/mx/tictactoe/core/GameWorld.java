@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.mx.tictactoe.DropGame;
 import com.mx.tictactoe.actor.Player;
 import com.mx.tictactoe.core.util.GUI;
+import com.mx.tictactoe.core.util.Score;
 import com.mx.tictactoe.core.util.assets.Assets;
 import com.mx.tictactoe.core.util.RainDropper;
 import com.mx.tictactoe.actor.actors.Raindrop;
@@ -26,15 +27,11 @@ public class GameWorld implements Disposable {
     private final com.mx.tictactoe.DropGame game;
     private final World world;
     private final RainDropper rainDropper;
-
     public Player player;
-    private int score;
-
+    private Score score;
     public com.mx.tictactoe.core.util.GUI gui;
 
     private Array<GameObject> objects;
-
-    private BodyDef wallBodydef;
 
     public static final float TORQUE = 6f;
     private static final float LINEAR_DAMPING = 1.85f;
@@ -43,6 +40,7 @@ public class GameWorld implements Disposable {
      * Force at which to bounce player in the opposite direction, if he exceeds set world bounds
      */
     private static final float BOUNDS_REPEL_FRC = 2f;
+
     public Wall rightWall;
     public Wall upWall;
     public Wall downWall;
@@ -83,7 +81,8 @@ public class GameWorld implements Disposable {
                 // remove raindrop if bucket collected it
                 if (raindrop.overlaps(player)) {
                     iter.remove();
-                    addScore();
+                    game.assets.DROP_SOUND.play();
+                    score.addScore();
                 }
             }
 
@@ -142,6 +141,7 @@ public class GameWorld implements Disposable {
     public void init() {
         objects = new Array<>();
         player = new Player(Assets.PLAYER_TEXTURE);
+        score = new Score();
         initBodies();
 
         objects.add(player);
@@ -156,7 +156,7 @@ public class GameWorld implements Disposable {
 
 
         initObjects();
-        resetScore();
+        score.resetScore();
     }
 
     // BodyDef, FixtureDef here?
@@ -201,29 +201,22 @@ public class GameWorld implements Disposable {
         return rainDropper.raindrops;
     }
 
-    public void addScore() {
-        game.assets.DROP_SOUND.play();
-        score++;
-    }
-
-    public void resetScore() {
-        score = 0;
-    }
-
     public int getScore() {
-        return score;
+        return score.getScore();
     }
 
     @Override
     public void dispose() {
-        System.out.println(this.getClass().getSimpleName() + " disposed.");
         world.dispose();
         player.dispose();
         gui.dispose();
         gameScreen.dispose();
+        game.dispose();
 
         for (GameObject object : objects) {
-//            object.dispose();
+            System.out.println(object.getClass().getSimpleName() + " disposed.");
+            object.dispose();
         }
+        System.out.println(this.getClass().getSimpleName() + " disposed.");
     }
 }

@@ -2,10 +2,8 @@ package com.mx.tictactoe.actor.actors;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mx.tictactoe.actor.Player;
 import com.mx.tictactoe.core.util.assets.Assets;
 
@@ -16,8 +14,6 @@ public class EnergyBar extends com.mx.tictactoe.actor.Actor {
     private Player player;
 
     public boolean isTouched = false;
-    public boolean scaled = false;
-    public boolean isOver = false;
 
     public EnergyBar(float actorX, float actorY, Player player) {
         this.player = player;
@@ -35,23 +31,6 @@ public class EnergyBar extends com.mx.tictactoe.actor.Actor {
                 return true;
             }
         });
-
-        addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                super.enter(event, x, y, pointer, fromActor);
-                System.out.println("in!");
-                ((EnergyBar) event.getTarget()).isOver = true;
-
-            }
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                super.exit(event, x, y, pointer, toActor);
-                System.out.println("out!");
-                ((EnergyBar) event.getTarget()).isOver = false;
-            }
-        });
     }
 
     @Override
@@ -61,17 +40,6 @@ public class EnergyBar extends com.mx.tictactoe.actor.Actor {
         if (isTouched) {
             System.out.println("acted out!");
             isTouched = false;
-        }
-
-        if (isOver) {
-            if (!scaled) {
-                scaleBy(1f);
-                System.out.println("isOver! SCAILING");
-                scaled = true;
-            }
-        } else if (!isOver && scaled) {
-            setScale(1f, 1f);
-            scaled = false;
         }
     }
 
@@ -85,5 +53,11 @@ public class EnergyBar extends com.mx.tictactoe.actor.Actor {
 
     public TextureRegion getTextureRegion() {
         return textureRegion;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        textureRegion = null;
     }
 }

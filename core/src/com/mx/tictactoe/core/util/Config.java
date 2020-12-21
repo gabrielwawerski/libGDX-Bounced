@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public final class Config {
     // window size
-    public static final int WINDOW_WIDTH = 800;
-    public static final int WINDOW_HEIGHT = 480;
+    public static final int WINDOW_WIDTH = 1920;
+    public static final int WINDOW_HEIGHT = 1080;
 
     // World settings
     public static final int GRAVITY_X = 0;

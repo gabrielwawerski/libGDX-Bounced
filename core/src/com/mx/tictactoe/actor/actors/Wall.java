@@ -70,4 +70,13 @@ public class Wall extends Actor implements GameObject {
     public Texture getTexture() {
         return texture;
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        texture.dispose();
+        shape.dispose();
+        body = null;
+
+    }
 }
