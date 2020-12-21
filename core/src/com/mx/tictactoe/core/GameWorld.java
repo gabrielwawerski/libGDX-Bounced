@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mx.tictactoe.DropGame;
 import com.mx.tictactoe.actor.Player;
-import com.mx.tictactoe.core.util.GUI;
+import com.mx.tictactoe.core.ui.UI;
 import com.mx.tictactoe.core.util.Score;
 import com.mx.tictactoe.core.util.assets.Assets;
 import com.mx.tictactoe.core.util.RainDropper;
@@ -29,7 +29,7 @@ public class GameWorld implements Disposable {
     private final RainDropper rainDropper;
     public Player player;
     private Score score;
-    public com.mx.tictactoe.core.util.GUI gui;
+    public UI UI;
 
     private Array<GameObject> objects;
 
@@ -58,7 +58,7 @@ public class GameWorld implements Disposable {
     }
 
     public void update() {
-        gui.update();
+        UI.update();
         world.step(Config.TIME_STEP, Config.VELOCITY_ITERATIONS, Config.POSITION_ITERATIONS);
         player.update();
         player.getBody().setLinearDamping(LINEAR_DAMPING);
@@ -79,7 +79,7 @@ public class GameWorld implements Disposable {
                 }
 
                 // remove raindrop if bucket collected it
-                if (raindrop.overlaps(player)) {
+                if (player.overlaps(raindrop)) {
                     iter.remove();
                     game.assets.DROP_SOUND.play();
                     score.addScore();
@@ -152,7 +152,7 @@ public class GameWorld implements Disposable {
 
         Stage stage = new Stage(gameScreen.viewport);
         Gdx.input.setInputProcessor(stage);
-        gui = new GUI(this, stage, "skin/sgx.json", "skin/sgx.atlas");
+        UI = new UI(this, stage, "skin/sgx.json", "skin/sgx.atlas");
 
 
         initObjects();
@@ -209,7 +209,7 @@ public class GameWorld implements Disposable {
     public void dispose() {
         world.dispose();
         player.dispose();
-        gui.dispose();
+        UI.dispose();
         gameScreen.dispose();
         game.dispose();
 
