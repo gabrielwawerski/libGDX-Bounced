@@ -43,8 +43,7 @@ public class UI implements Disposable {
 
         energy = new Label("Energy: ", skin);
         energy.setPosition(220f, 45f);
-//        energy.setSize(100f, 25f);
-        energy.setText("Energy: " + gameWorld.player.energy);
+        button.setName("Koszernik");
 
         button.addListener(new InputListener() {
             @Override
