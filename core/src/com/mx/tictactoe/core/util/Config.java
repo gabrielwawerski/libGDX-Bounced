@@ -1,13 +1,13 @@
 package com.mx.tictactoe.core.util;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
+import com.mx.tictactoe.util.Logger;
 
 public final class Config {
     // Window settings
     public static final String WINDOW_TITLE = "Drop Game";
-    public static final int WINDOW_WIDTH = 1280;
-    public static final int WINDOW_HEIGHT = 720;
+    public static final int WINDOW_WIDTH = 1920;
+    public static final int WINDOW_HEIGHT = 1080;
     public static final boolean FULLSCREEN = false;
     public static final boolean WINDOW_RESIZABLE = false;
     public static final boolean WINDOW_UNDECORATED = true;

@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mx.tictactoe.DropGame;
-import com.mx.tictactoe.actor.Player;
+import com.mx.tictactoe.actor.player.Player;
 import com.mx.tictactoe.core.ui.UI;
 import com.mx.tictactoe.core.util.Score;
 import com.mx.tictactoe.core.util.assets.Assets;

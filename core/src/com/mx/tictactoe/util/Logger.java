@@ -1,4 +1,4 @@
-package com.mx.tictactoe.core.util;
+package com.mx.tictactoe.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;

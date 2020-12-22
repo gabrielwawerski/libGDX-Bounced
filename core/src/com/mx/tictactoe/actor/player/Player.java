@@ -1,4 +1,4 @@
-package com.mx.tictactoe.actor;
+package com.mx.tictactoe.actor.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mx.tictactoe.actor.Actor;
 import com.mx.tictactoe.actor.actors.Raindrop;
 import com.mx.tictactoe.actor.actors.Wall;
 import com.mx.tictactoe.core.GameWorld;

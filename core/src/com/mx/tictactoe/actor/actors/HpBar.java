@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.mx.tictactoe.actor.Actor;
-import com.mx.tictactoe.actor.Player;
+import com.mx.tictactoe.actor.player.Player;
 import com.mx.tictactoe.core.util.assets.Assets;
 
 public class HpBar extends Actor {

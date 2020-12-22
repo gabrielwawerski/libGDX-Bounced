@@ -1,4 +1,4 @@
-package com.mx.tictactoe.util;
+package com.mx.tictactoe.actor.player;
 
 public class Energy {
     private int energy;

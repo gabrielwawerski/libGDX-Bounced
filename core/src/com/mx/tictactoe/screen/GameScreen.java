@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mx.tictactoe.actor.Player;
+import com.mx.tictactoe.actor.player.Player;
 import com.mx.tictactoe.DropGame;
 import com.mx.tictactoe.actor.actors.Raindrop;
 import com.mx.tictactoe.core.util.assets.Assets;
