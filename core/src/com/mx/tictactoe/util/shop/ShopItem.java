@@ -26,4 +26,6 @@ public abstract class ShopItem {
     public String getItemDescription() {
         return itemDescription;
     }
+
+    public abstract void upgrade();
 }

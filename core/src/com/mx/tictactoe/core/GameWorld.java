@@ -28,7 +28,7 @@ public class GameWorld implements Disposable {
     private final World world;
     private final RainDropper rainDropper;
     public Player player;
-    private Score score;
+    public Score score;
     public UI UI;
 
     private Array<GameObject> objects;

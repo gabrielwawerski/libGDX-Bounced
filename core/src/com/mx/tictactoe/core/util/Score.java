@@ -15,6 +15,14 @@ public class Score {
         score++;
     }
 
+    public void subScore(int amount) {
+        if (score - amount < 0) {
+            score = 0;
+        } else {
+            score -= amount;
+        }
+    }
+
     public void resetScore() {
         score = 0;
     }

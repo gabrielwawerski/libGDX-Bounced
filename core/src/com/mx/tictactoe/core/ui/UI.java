@@ -12,6 +12,7 @@ import com.mx.tictactoe.actor.actors.HpBar;
 import com.mx.tictactoe.core.GameWorld;
 import com.mx.tictactoe.actor.actors.EnergyBar;
 import com.mx.tictactoe.core.ui.element.ControlsInfo;
+import com.mx.tictactoe.util.shop.Shop;
 
 public class UI implements Disposable {
     private GameWorld gameWorld;
@@ -25,16 +26,20 @@ public class UI implements Disposable {
     private final Label energy;
     private final Label hp;
 
+    private Shop shop;
+    private final Button upgradeEngineButton;
+
     public UI(final GameWorld gameWorld, Stage stage, String skinFilePath, String textureAtlasPath) {
         this.gameWorld = gameWorld;
         this.stage = stage;
+        shop = new Shop(gameWorld.player);
         energyBar = new EnergyBar(220f, 25f, gameWorld.player);
         hpBar = new HpBar(10f, 25f, gameWorld.player);
         skin = new Skin(Gdx.files.internal(skinFilePath), new TextureAtlas(Gdx.files.internal(textureAtlasPath)));
         uiTable = new Table(skin);
         uiTable.setPosition(Gdx.graphics.getWidth() - 250f, Gdx.graphics.getHeight() - 50f);
 
-        Button button = new TextButton("Apply", skin);
+        upgradeEngineButton = new TextButton("Upgrade Engine", skin);
         ControlsInfo controlsInfo = new ControlsInfo(skin);
         final TextArea textArea = new TextArea("Nowy text area", skin);
         final Label label = new Label("nowy textfield", skin);
@@ -43,9 +48,10 @@ public class UI implements Disposable {
 
         energy = new Label("Energy: ", skin);
         energy.setPosition(220f, 45f);
-        button.setName("Koszernik");
+        upgradeEngineButton.setName("Koszernik");
+        upgradeEngineButton.setDisabled(true);
 
-        button.addListener(new InputListener() {
+        upgradeEngineButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 label.setText(textArea.getText());
@@ -65,7 +71,7 @@ public class UI implements Disposable {
         uiTable.row();
         uiTable.add(textArea);
         uiTable.row();
-        uiTable.add(button);
+        uiTable.add(upgradeEngineButton);
 //        ScaleToAction scaleToAction = new ScaleToAction();
 //        scaleToAction.setScale(1.65f);
 //        energyBar.addAction(scaleToAction);
@@ -83,6 +89,7 @@ public class UI implements Disposable {
         score.setText("Score: " + gameWorld.getScore());
         energy.setText("Energy: " + gameWorld.player.energy);
         hp.setText("Health: " + gameWorld.player.health);
+        upgradeEngineButton.setDisabled(gameWorld.score.getScore() < Shop.ENGINE_UPGRADE_PRICE);
     }
 
     public void draw() {
