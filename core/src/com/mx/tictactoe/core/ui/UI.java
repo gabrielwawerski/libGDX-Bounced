@@ -3,9 +3,7 @@ package com.mx.tictactoe.core.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.mx.tictactoe.actor.actors.HpBar;
@@ -27,37 +25,26 @@ public class UI implements Disposable {
     private final Label hp;
 
     private Shop shop;
-    private final Button upgradeEngineButton;
 
     public UI(final GameWorld gameWorld, Stage stage, String skinFilePath, String textureAtlasPath) {
         this.gameWorld = gameWorld;
         this.stage = stage;
-        shop = new Shop(gameWorld.player);
-        energyBar = new EnergyBar(220f, 25f, gameWorld.player);
-        hpBar = new HpBar(10f, 25f, gameWorld.player);
         skin = new Skin(Gdx.files.internal(skinFilePath), new TextureAtlas(Gdx.files.internal(textureAtlasPath)));
+        shop = new Shop(gameWorld, gameWorld.player, skin);
         uiTable = new Table(skin);
         uiTable.setPosition(Gdx.graphics.getWidth() - 250f, Gdx.graphics.getHeight() - 50f);
 
-        upgradeEngineButton = new TextButton("Upgrade Engine", skin);
         ControlsInfo controlsInfo = new ControlsInfo(skin);
         final TextArea textArea = new TextArea("Nowy text area", skin);
         final Label label = new Label("nowy textfield", skin);
+
+        hpBar = new HpBar(10f, 25f, gameWorld.player);
         hp = new Label("Health: ", skin);
         hp.setPosition(10f, 45f);
 
         energy = new Label("Energy: ", skin);
         energy.setPosition(220f, 45f);
-        upgradeEngineButton.setName("Koszernik");
-        upgradeEngineButton.setDisabled(true);
-
-        upgradeEngineButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                label.setText(textArea.getText());
-                return super.touchDown(event, x, y, pointer, button);
-            }
-        });
+        energyBar = new EnergyBar(220f, 25f, gameWorld.player);
 
         score = new Label("Score: ", skin);
         score.setPosition(Gdx.graphics.getWidth() / 2f - 45f, Gdx.graphics.getHeight() - 50f - 10f);
@@ -71,7 +58,11 @@ public class UI implements Disposable {
         uiTable.row();
         uiTable.add(textArea);
         uiTable.row();
-        uiTable.add(upgradeEngineButton);
+        uiTable.row();
+
+        for (Actor actor : shop.actors) {
+            uiTable.add(actor);
+        }
 //        ScaleToAction scaleToAction = new ScaleToAction();
 //        scaleToAction.setScale(1.65f);
 //        energyBar.addAction(scaleToAction);
@@ -89,7 +80,7 @@ public class UI implements Disposable {
         score.setText("Score: " + gameWorld.getScore());
         energy.setText("Energy: " + gameWorld.player.energy);
         hp.setText("Health: " + gameWorld.player.health);
-        upgradeEngineButton.setDisabled(gameWorld.score.getScore() < Shop.ENGINE_UPGRADE_PRICE);
+        shop.act(Gdx.graphics.getDeltaTime());
     }
 
     public void draw() {

@@ -22,6 +22,7 @@ public class Player extends Actor implements GameObject {
     private Texture texture;
     public final Sprite sprite;
     private final BodyDef bodyDef;
+    public FixtureDef fixtureDef;
 
     public final float BIDIRECTIONAL_FORCE = 0.2f;
     public final float SINGLE_DIRECTIONAL_FORCE = 0.37f;
@@ -36,6 +37,7 @@ public class Player extends Actor implements GameObject {
     private final long ENERGY_DRAIN = 15;
     public final long ENERGY_RECOVERY_SPEED = 5;
     private boolean jumped = false;
+
 
     public Player(Texture texture) {
         setEntityWidth(Config.PLAYER_WIDTH);
@@ -62,7 +64,7 @@ public class Player extends Actor implements GameObject {
         }
     }
 
-    private float getSpeed() {
+    public float getSpeed() {
         return body.getLinearVelocity().x;
     }
 
@@ -135,7 +137,7 @@ public class Player extends Actor implements GameObject {
     }
 
     public void applyForce(float forceX, float forceY) {
-        body.applyForce(new Vector2(forceX, forceY), body.getPosition(), true);
+        getBody().applyForce(new Vector2(forceX, forceY), body.getPosition(), true);
     }
 
     private void drainEnergy() {
@@ -156,31 +158,17 @@ public class Player extends Actor implements GameObject {
                 16f / PIXELS_TO_METERS
         );
 
-        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = PLAYER_DENSITY;
         fixtureDef.friction = PLAYER_FRICTION;
         fixtureDef.restitution = PLAYER_RESTITUTION;
         Fixture fixture = body.createFixture(fixtureDef);
-        // shape no longer needed
-        shape.dispose();
 
         getBody().setLinearVelocity(2f, 2f);
 //        getSprite().setRotation((float) Math.toDegrees(getBody().getAngle()));
         getBody().setLinearDamping(1.5f);
         getBody().setAngularDamping(0.5f);
-    }
-
-    @Override
-    public boolean overlaps(Actor other) {
-//        System.out.println("overlaps!");
-        if (entity.overlaps(other.getEntity()) && getSpeed() > 2.5f) {
-            if (other instanceof Wall) {
-                health -= 3;
-                return true;
-            }
-        }
-        return super.overlaps(other);
     }
 
     @Override
@@ -215,6 +203,10 @@ public class Player extends Actor implements GameObject {
 
     public Body getBody() {
         return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
 
     public Texture getTexture() {

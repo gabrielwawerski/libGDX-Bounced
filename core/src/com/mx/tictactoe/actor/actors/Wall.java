@@ -41,9 +41,9 @@ public class Wall extends Actor implements GameObject {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.1f;
-        fixtureDef.friction = 0.1f;
-        fixtureDef.restitution = 0.1f;
+        fixtureDef.density = 0f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 0f;
         Fixture fixture = body.createFixture(fixtureDef);
     }
 

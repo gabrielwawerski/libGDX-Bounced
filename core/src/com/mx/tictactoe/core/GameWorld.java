@@ -45,6 +45,7 @@ public class GameWorld implements Disposable {
     public Wall upWall;
     public Wall downWall;
     public Wall leftWall;
+    private Array<Wall> walls;
 
     public GameWorld(com.mx.tictactoe.DropGame game, GameScreen gameScreen) {
         this.game = game;
@@ -57,6 +58,10 @@ public class GameWorld implements Disposable {
 //        createPlayer(player)
     }
 
+    private void createBody(BodyDef bodyDef) {
+        world.createBody(bodyDef);
+    }
+
     public void update() {
         UI.update();
         world.step(Config.TIME_STEP, Config.VELOCITY_ITERATIONS, Config.POSITION_ITERATIONS);
@@ -67,6 +72,8 @@ public class GameWorld implements Disposable {
         for (GameObject object : objects) {
             object.update();
         }
+
+        world.createBody(player.getBodyDef());
 
         if (Config.RAINDROPS_SPAWN) {
             for (Iterator<Raindrop> iter = rainDropper.raindrops.iterator(); iter.hasNext(); ) {
@@ -84,13 +91,19 @@ public class GameWorld implements Disposable {
                     game.assets.DROP_SOUND.play();
                     score.addScore();
                 }
+
+                for (Wall wall : walls) {
+                    if (player.overlaps(wall) && player.getSpeed() > 1.5f) {
+                        System.out.println("banged a wall!");
+                        player.health -= 3;
+                    }
+                }
             }
 
             if (TimeUtils.nanoTime() - RainDropper.timeSinceLastDrop > RainDropper.TIME_UNTIL_NEXT_SPAWN) {
                 spawnRaindrops();
             }
         }
-
         worldBounds();
     }
 
@@ -122,7 +135,7 @@ public class GameWorld implements Disposable {
 
         // down bound
         if (player.getSprite().getY() - 2 <= 0) {
-            player.applyForce(0, BOUNDS_REPEL_FRC);
+//            player.applyForce(0, BOUNDS_REPEL_FRC);
 //            player.setLinearDamping(LINEAR_DAMPING);
         }
     }
@@ -143,9 +156,8 @@ public class GameWorld implements Disposable {
         player = new Player(Assets.PLAYER_TEXTURE);
         score = new Score();
         initBodies();
-
-        objects.add(player);
         initWalls();
+        objects.add(player);
 
         Assets.RAIN_MUSIC.setLooping(true);
         Assets.RAIN_MUSIC.setVolume(Config.RAIN_VOLUME);
@@ -153,7 +165,6 @@ public class GameWorld implements Disposable {
         Stage stage = new Stage(gameScreen.viewport);
         Gdx.input.setInputProcessor(stage);
         UI = new UI(this, stage, "skin/sgx.json", "skin/sgx.atlas");
-
 
         initObjects();
         score.resetScore();
@@ -183,6 +194,12 @@ public class GameWorld implements Disposable {
         objects.add(upWall);
         objects.add(leftWall);
         objects.add(downWall);
+
+        walls = new Array<>();
+        walls.add(rightWall);
+        walls.add(upWall);
+        walls.add(leftWall);
+        walls.add(downWall);
     }
 
     public DropGame getGame() {
