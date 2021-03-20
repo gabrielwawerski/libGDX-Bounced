@@ -64,14 +64,12 @@ public class EngineUpgrade extends Actor {
     }
 
     public void upgrade() {
-        if (currentUpgrade < MAX_UPGRADES) {
+        if (currentUpgrade++ < MAX_UPGRADES) {
             player.fixtureDef.density -= 10.10f;
             player.fixtureDef.friction -= 10.90f;
 
             // TODO figure out how to upgrade player body
             player.getBody().createFixture(player.fixtureDef);
-
-            currentUpgrade++;
         }
     }
 

@@ -13,7 +13,7 @@ import com.mx.tictactoe.actor.player.Player;
 import com.mx.tictactoe.core.ui.UI;
 import com.mx.tictactoe.core.util.Score;
 import com.mx.tictactoe.core.util.assets.Assets;
-import com.mx.tictactoe.core.util.RainDropper;
+import com.mx.tictactoe.core.util.RainSpawner;
 import com.mx.tictactoe.actor.actors.Raindrop;
 import com.mx.tictactoe.screen.GameScreen;
 import com.mx.tictactoe.core.util.Config;
@@ -26,7 +26,7 @@ public class GameWorld implements Disposable {
     private final GameScreen gameScreen;
     private final com.mx.tictactoe.DropGame game;
     private final World world;
-    private final RainDropper rainDropper;
+    private final RainSpawner rainSpawner;
     public Player player;
     public Score score;
     public UI UI;
@@ -51,7 +51,7 @@ public class GameWorld implements Disposable {
         this.game = game;
         this.gameScreen = gameScreen;
         world = new World(new Vector2(Config.GRAVITY_X, Config.GRAVITY_Y), true);
-        rainDropper = new RainDropper();
+        rainSpawner = new RainSpawner();
         init();
 
         // todo default player implementation
@@ -76,7 +76,7 @@ public class GameWorld implements Disposable {
         world.createBody(player.getBodyDef());
 
         if (Config.RAINDROPS_SPAWN) {
-            for (Iterator<Raindrop> iter = rainDropper.raindrops.iterator(); iter.hasNext(); ) {
+            for (Iterator<Raindrop> iter = rainSpawner.raindrops.iterator(); iter.hasNext(); ) {
                 Raindrop raindrop = iter.next();
 
                 raindrop.setY(raindrop.getY() - raindrop.getEntitySpeed() * Gdx.graphics.getDeltaTime());
@@ -100,7 +100,7 @@ public class GameWorld implements Disposable {
                 }
             }
 
-            if (TimeUtils.nanoTime() - RainDropper.timeSinceLastDrop > RainDropper.TIME_UNTIL_NEXT_SPAWN) {
+            if (TimeUtils.nanoTime() - RainSpawner.timeSinceLastDrop > RainSpawner.TIME_UNTIL_NEXT_SPAWN) {
                 spawnRaindrops();
             }
         }
@@ -144,11 +144,12 @@ public class GameWorld implements Disposable {
      * Android handle
      */
     public void onShow() {
+        spawnRaindrops();
         Assets.RAIN_MUSIC.play();
     }
 
     public void spawnRaindrops() {
-        rainDropper.spawnRaindrop();
+        rainSpawner.spawnRaindrop();
     }
 
     public void init() {
@@ -215,7 +216,7 @@ public class GameWorld implements Disposable {
     }
 
     public Array<Raindrop> getRaindrops() {
-        return rainDropper.raindrops;
+        return rainSpawner.raindrops;
     }
 
     public int getScore() {

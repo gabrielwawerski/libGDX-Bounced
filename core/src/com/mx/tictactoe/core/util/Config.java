@@ -6,8 +6,8 @@ import com.mx.tictactoe.util.Logger;
 public final class Config {
     // Window settings
     public static final String WINDOW_TITLE = "Drop Game";
-    public static final int WINDOW_WIDTH = 1920;
-    public static final int WINDOW_HEIGHT = 1080;
+    public static final int WINDOW_WIDTH = 1600;
+    public static final int WINDOW_HEIGHT = 900;
     public static final boolean FULLSCREEN = false;
     public static final boolean WINDOW_RESIZABLE = false;
     public static final boolean WINDOW_UNDECORATED = true;
